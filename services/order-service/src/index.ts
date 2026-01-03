@@ -3,6 +3,7 @@ import type { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
 import axios from 'axios';
+import amqp from 'amqplib';
 
 const app = express();
 const prisma = new PrismaClient();
@@ -77,12 +78,36 @@ app.post('/orders', async (req: Request, res: Response) => {
       include: { items: true }
     });
 
+    publishOrderEvent(verifiedItems);
+
     res.status(201).json(newOrder);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Sipariş oluşturulamadı!' });
   }
 });
+
+async function publishOrderEvent(items: any[]) {
+  try {
+    const connection = await amqp.connect('amqp://guest:guest@localhost:5672');
+    const channel = await connection.createChannel();
+    const queue = 'order_created';
+
+    await channel.assertQueue(queue, { durable: false });
+
+    const message = JSON.stringify(items.map(item => ({
+      isbn: item.bookIsbn,
+      quantity: item.quantity
+    })));
+
+    channel.sendToQueue(queue, Buffer.from(message));
+    console.log("🐇 Sent to RabbitMQ:", message);
+
+    setTimeout(() => { connection.close(); }, 500);
+  } catch (error) {
+    console.error("RabbitMQ Error:", error);
+  }
+}
 
 app.listen(PORT, () => {
   console.log(`Order Service running on port ${PORT}`);
