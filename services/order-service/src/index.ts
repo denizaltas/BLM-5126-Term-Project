@@ -30,12 +30,35 @@ const authenticateToken = (req: any, res: any, next: any) => {
   });
 };
 
-// GET ile orderları çekme
+// GET ile tüm orderları çekme
 app.get('/orders', async (req: Request, res: Response) => {
   const orders = await prisma.order.findMany({
     include: { items: true }
   });
   res.json(orders);
+});
+
+// GET ile kişiye ait orderları çekme
+app.get('/my-orders', authenticateToken, async (req: any, res: any) => {
+  try {
+    const user = req.user; 
+
+    const orders = await prisma.order.findMany({
+      where: {
+        userEmail: user.email 
+      },
+      include: {
+        items: true
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ error: "Siparişleriniz yüklenemedi!" });
+  }
 });
 
 // POST ile order oluşturma

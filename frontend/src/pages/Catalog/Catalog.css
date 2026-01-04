@@ -1,0 +1,87 @@
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2rem;
+}
+
+.book-card {
+  background: var(--white);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+  display: flex;
+  flex-direction: column; 
+  align-items: center;
+  text-align: center;
+  min-height: 420px; 
+}
+
+.image-square {
+  width: 100%;
+  aspect-ratio: 1/1;
+  background: #eee;
+  border-radius: 8px;
+  margin-bottom: 1.5rem; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+}
+
+.book-info {
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.book-info h3 {
+  font-size: 1.1rem;
+  margin: 0 0 8px 0;
+  color: var(--text-dark);
+  min-height: 2.8rem; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.price {
+  color: #2563eb;
+  font-weight: bold;
+  font-size: 1.3rem;
+  margin: auto 0 1rem 0;
+}
+
+.add-btn {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-btn:hover {
+  background-color: #1d4ed8;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.qty-input {
+  width: 55px;
+  padding: 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  margin-right: 12px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.cart-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: auto;
+}

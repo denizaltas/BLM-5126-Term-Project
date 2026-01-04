@@ -12,13 +12,13 @@ app.use(express.json());
 app.use(cors());
 
 // GET Books
-app.get('/products', async (req: Request, res: Response) => {
-  try {
-    const products = await prisma.book.findMany();
-    res.json(products);
-  } catch (error) {
-    res.status(500).json({ error: 'Kitapları getirmekte sorun var!' });
-  }
+app.get('/products', async (req, res) => {
+  const products = await prisma.book.findMany({
+    orderBy: {
+      isbn: 'asc'
+    }
+  });
+  res.json(products);
 });
 
 // POST Book

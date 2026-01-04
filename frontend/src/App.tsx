@@ -1,35 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import Navbar from './components/Navbar/Navbar';
+import Catalog from './pages/Catalog/Catalog';
+import LoginPage from './pages/LoginPage/LoginPage';
+import Orders from './pages/Orders/Orders';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+  const [view, setView] = useState<'catalog' | 'login' | 'orders'>('catalog');
+  const [myOrders, setMyOrders] = useState<any[]>([]);
+
+  const handleLogin = (newToken: string) => {
+    setToken(newToken);
+    localStorage.setItem('token', newToken);
+    setView('catalog');
+  };
+
+  const handleLogout = () => {
+    setToken(null);
+    setMyOrders([]);
+    localStorage.removeItem('token');
+    setView('catalog');
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="app-wrapper">
+      <Navbar setView={setView} token={token} onLogout={handleLogout} />
+      
+      <div className="container">
+        {view === 'catalog' && <Catalog token={token} />}
+        {view === 'login' && <LoginPage onLoginSuccess={handleLogin} />}
+        {view === 'orders' && token && (
+          <Orders 
+            token={token} 
+            orders={myOrders} 
+            setOrders={setMyOrders} 
+          />
+        )}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;

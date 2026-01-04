@@ -1,0 +1,73 @@
+.history-title {
+  text-align: left;
+  margin-bottom: 2rem;
+  color: #2d3436;
+}
+
+.order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.amazon-card {
+  background: white;
+  border: 1px solid #d5d9d9;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.order-header {
+  background-color: #f0f2f2;
+  padding: 14px 20px;
+  display: flex;
+  gap: 40px;
+  border-bottom: 1px solid #d5d9d9;
+  font-size: 0.8rem;
+}
+
+.header-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-column .label {
+  color: #565959;
+  text-transform: uppercase;
+}
+
+.header-column .value {
+  color: #2d3436;
+  font-weight: 500;
+}
+
+.order-body {
+  padding: 20px;
+  background-color: #fff;
+}
+
+.order-item {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.item-square {
+  width: 80px;
+  height: 80px;
+  background-color: #f7f7f7;
+  border: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 0.8rem;
+}
+
+.item-details p {
+  margin: 5px 0 0 0;
+  color: #565959;
+  font-size: 0.9rem;
+}
