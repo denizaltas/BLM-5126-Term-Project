@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
 import axios from 'axios';
 import amqp from 'amqplib';
+import jwt from 'jsonwebtoken';
 
 const app = express();
 const prisma = new PrismaClient();
@@ -12,7 +13,22 @@ const PORT = 3003;
 app.use(express.json());
 app.use(cors());
 
+const SECRET_KEY = "secretkey";
+
 const PRODUCT_SERVICE_URL = 'http://localhost:3002/products';
+
+const authenticateToken = (req: any, res: any, next: any) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  jwt.verify(token, SECRET_KEY, (err: any, user: any) => {
+    if (err) {
+      return res.status(403).json({ error: "Token hatalı!" });
+    }
+    req.user = user;
+    next();
+  });
+};
 
 // GET ile orderları çekme
 app.get('/orders', async (req: Request, res: Response) => {
@@ -23,9 +39,10 @@ app.get('/orders', async (req: Request, res: Response) => {
 });
 
 // POST ile order oluşturma
-app.post('/orders', async (req: Request, res: Response) => {
+app.post('/orders', authenticateToken, async (req: any, res: any) => {
   try {
-    const { userFirstName, userLastName, userEmail, items } = req.body;
+    const { items } = req.body;
+    const user = req.user;
 
     if (!items || items.length === 0) {
       res.status(400).json({ error: 'Sepetiniz boş!' });
@@ -66,9 +83,9 @@ app.post('/orders', async (req: Request, res: Response) => {
 
     const newOrder = await prisma.order.create({
       data: {
-        userFirstName,
-        userLastName,
-        userEmail,
+        userFirstName: user.name,
+        userLastName: "",
+        userEmail: user.email,
         total: calculatedTotal,
         status: "PENDING",
         items: {
