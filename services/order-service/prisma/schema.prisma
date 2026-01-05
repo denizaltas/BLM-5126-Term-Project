@@ -23,7 +23,7 @@ model OrderItem {
   id        Int     @id @default(autoincrement())
   orderId   Int
   order     Order   @relation(fields: [orderId], references: [id])
-  
+  title     String
   bookIsbn  String  
   quantity  Int
   price     Decimal

@@ -94,6 +94,7 @@ app.post('/orders', authenticateToken, async (req: any, res: any) => {
 
         verifiedItems.push({
           bookIsbn: item.bookIsbn,
+          title: item.title,
           quantity: item.quantity,
           price: realPrice
         });

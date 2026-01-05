@@ -17,6 +17,13 @@
   padding: 1rem 2rem;
 }
 
+.nav-links {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+
 .nav-logo {
   font-size: 1.5rem;
   font-weight: bold;
@@ -38,4 +45,33 @@
   color: white;
   padding: 8px 16px;
   border-radius: 5px;
+}
+
+.cart-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.cart-badge {
+  background-color: #2563eb;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.nav-logo {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-logo .text {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  color: #764ba2;
 }

@@ -6,9 +6,15 @@ interface OrdersProps {
   token: string | null;
   orders: any[];
   setOrders: (orders: any[]) => void;
+  products: any[];
 }
 
-const Orders = ({ token, orders, setOrders }: OrdersProps) => {
+const Orders = ({ token, orders, setOrders, products }: OrdersProps) => {
+  const getBookTitle = (isbn: string) => {
+    const book = products?.find((p: any) => p.isbn === isbn);
+    return book ? book.title : `${isbn}`;
+  };
+
   useEffect(() => {
     if (token) {
       api.getMyOrders(token)
@@ -43,8 +49,8 @@ const Orders = ({ token, orders, setOrders }: OrdersProps) => {
                   <div className="order-item" key={item.id}>
                     <div className="item-square">Book</div>
                     <div className="item-details">
-                      <strong>ISBN: {item.bookIsbn}</strong>
-                      <p>Quantity: {item.quantity} — Price: ${item.price}</p>
+                      <strong>{getBookTitle(item.title)}</strong>
+                      <p>Quantity: {item.quantity} - Price: ${item.price}</p>
                     </div>
                   </div>
                 ))}
@@ -55,6 +61,7 @@ const Orders = ({ token, orders, setOrders }: OrdersProps) => {
       </div>
     </div>
   );
+
 };
 
 export default Orders;
