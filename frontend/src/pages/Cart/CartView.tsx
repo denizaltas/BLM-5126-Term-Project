@@ -1,5 +1,6 @@
 import './CartView.css';
 import { api } from '../../services/api';
+import EmptyState from '../../components/EmptyState/EmptyState';
 
 const CartView = ({ cart, setCart, token, setView }: any) => {
   const total = cart.reduce((acc: number, item: any) => acc + item.price * item.quantity, 0);
@@ -30,10 +31,17 @@ const CartView = ({ cart, setCart, token, setView }: any) => {
 
   return (
     <div className="cart-container">
-      <h2>Shopping Cart</h2>
+      
       {cart.length === 0 ? (
-        <p>Your cart is empty.</p>
+        <EmptyState 
+          message="Your shopping cart is empty!" 
+          actionText="Go Shopping" 
+          onAction={() => setView('catalog')} 
+          icon="🛒"
+        />
       ) : (
+        <>
+        <h2>Shopping Cart</h2>
         <div className="cart-layout">
           <div className="cart-items">
   {cart.map((item: any) => (
@@ -69,6 +77,7 @@ const CartView = ({ cart, setCart, token, setView }: any) => {
             <button className="checkout-btn" onClick={handleCheckout}>Proceed to Checkout</button>
           </div>
         </div>
+        </>
       )}
     </div>
   );

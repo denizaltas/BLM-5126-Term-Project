@@ -1,0 +1,38 @@
+.empty-state-card {
+  background: white;
+  padding: 3rem;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  max-width: 400px;
+  margin: 40px auto;
+  border: 1px solid #eef2f6;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  display: block;
+}
+
+.empty-state-card h3 {
+  color: #2d3436;
+  margin-bottom: 1.5rem;
+  font-size: 1.4rem;
+}
+
+.empty-action-btn {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.empty-action-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+}
