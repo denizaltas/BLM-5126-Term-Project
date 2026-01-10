@@ -128,6 +128,19 @@ app.post('/orders', authenticateToken, async (req: any, res: any) => {
   }
 });
 
+app.patch('/orders/:id/pay', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const updatedOrder = await prisma.order.update({
+      where: { id: Number(id) },
+      data: { status: 'PAID' } 
+    });
+    res.json({ success: true, order: updatedOrder });
+  } catch (error) {
+    res.status(500).json({ error: "Order not found or update failed" });
+  }
+});
+
 async function publishOrderEvent(items: any[]) {
   try {
     const connection = await amqp.connect('amqp://guest:guest@localhost:5672');

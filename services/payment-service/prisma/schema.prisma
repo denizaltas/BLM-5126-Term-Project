@@ -1,0 +1,17 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ValidCard {
+  id          Int      @id @default(autoincrement())
+  cardNumber  String   @unique
+  cardHolder  String
+  cvv         String
+  expiry      String
+  balance     Float    @default(1000.0)
+}

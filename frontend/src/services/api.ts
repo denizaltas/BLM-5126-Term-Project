@@ -3,6 +3,7 @@ import axios from 'axios';
 const PRODUCT_URL = 'http://localhost:3002';
 const ORDER_URL = 'http://localhost:3003';
 const USER_URL = 'http://localhost:3004';
+const PAYMENT_URL = 'http://localhost:3005';
 
 export const api = {
   login: (credentials: any) => axios.post(`${USER_URL}/login`, credentials),
@@ -18,5 +19,8 @@ export const api = {
   getMyOrders: (token: string) => 
     axios.get(`${ORDER_URL}/my-orders`, {
       headers: { Authorization: `Bearer ${token}` }
-    })
+    }),
+  
+    processPayment: (paymentData: { orderId: number; amount: number; cardDetails: any }) => 
+    axios.post(`${PAYMENT_URL}/process-payment`, paymentData)
 };
