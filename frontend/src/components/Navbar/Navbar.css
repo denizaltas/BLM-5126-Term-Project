@@ -75,3 +75,16 @@
   font-weight: 800;
   color: #764ba2;
 }
+
+.admin-nav-link {
+  color: #7c3aed;
+  font-weight: bold;
+  border: 1px solid #7c3aed;
+  border-radius: 6px;
+  padding: 4px 10px;
+  margin-left: 10px;
+}
+
+.admin-nav-link:hover {
+  background-color: #f5f3ff;
+}

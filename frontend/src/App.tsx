@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage/LoginPage';
 import Orders from './pages/Orders/Orders';
 import CartView from './pages/Cart/CartView';
 import PaymentPage from './pages/Payment/Payment';
+import AdminDashboard from './pages/Admin/AdminDashboard';
 
 interface CartItem {
   bookIsbn: string;
@@ -13,7 +14,7 @@ interface CartItem {
   quantity: number;
 }
 
-type ViewType = 'catalog' | 'login' | 'orders' | 'cart' | 'payment';
+type ViewType = 'catalog' | 'login' | 'orders' | 'cart' | 'payment' | 'admin';
 
 function App() {
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
@@ -23,18 +24,24 @@ function App() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [products] = useState<any[]>([]);
   const [currentOrderId, setCurrentOrderId] = useState<number | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(localStorage.getItem('role'));
 
-  const handleLogin = (newToken: string) => {
-    setToken(newToken);
-    localStorage.setItem('token', newToken);
+  const handleLogin = (data: any) => {
+    console.log("Data received from server:", data);
+    setToken(data.token);
+    setUserRole(data.role); 
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('role', data.role); 
     setView('catalog');
   };
 
   const handleLogout = () => {
     setToken(null);
+    setUserRole(null);
     setMyOrders([]); 
     setCart([]);    
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
     setView('catalog');
   };
 
@@ -58,17 +65,24 @@ function App() {
       <Navbar 
         setView={setView} 
         token={token} 
+        userRole={userRole}
         onLogout={handleLogout} 
         cart={cart}
       />
       
       <div className="container">
+        {view === 'admin' && userRole === 'ADMIN' ? (
+          <AdminDashboard token={token!} />
+        ) : view === 'admin' ? (
+          <div>Access Denied: You are not an admin.</div>
+        ) : null}
+
         {view === 'catalog' && (
-<Catalog 
-    token={token} 
-    addToCart={addToCart} 
-  />
-)}
+          <Catalog 
+          token={token} 
+          addToCart={addToCart} 
+          />
+          )}
         
         {view === 'cart' && (
           <CartView 

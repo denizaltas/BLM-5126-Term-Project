@@ -61,6 +61,19 @@ app.get('/my-orders', authenticateToken, async (req: any, res: any) => {
   }
 });
 
+// Admin kullanıcısı için tüm order'ları çekme
+app.get('/admin/orders', async (req, res) => {
+  try {
+    const allOrders = await prisma.order.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: { items: true } // If you want to see exactly what was bought
+    });
+    res.json(allOrders);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch all orders" });
+  }
+});
+
 // POST ile order oluşturma
 app.post('/orders', authenticateToken, async (req: any, res: any) => {
   try {

@@ -14,15 +14,13 @@ app.use(cors());
 
 app.post('/register', async (req, res) => {
   try {
-    const { email, password, firstName, lastName } = req.body;
+    const { email, password, firstName, lastName, role } = req.body;
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
-       res.status(400).json({ error: "Kullanıcı sistemde kayıtlı!" });
-       return;
+      return res.status(400).json({ error: "Kullanıcı sistemde kayıtlı!" });
     }
 
-    // Parolayı hash'le
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await prisma.user.create({
@@ -30,14 +28,20 @@ app.post('/register', async (req, res) => {
         email,
         password: hashedPassword,
         firstName,
-        lastName
+        lastName,
+        role: role || "CUSTOMER" // This will now work if 'generate' was run
       }
     });
 
-    res.status(201).json({ message: "Kullanıcı başarıyla oluşturuldu!", userId: user.id });
+    res.status(201).json({ 
+      message: "Kullanıcı başarıyla oluşturuldu!", 
+      userId: user.id,
+      role: user.role 
+    });
 
   } catch (error) {
     console.error("Hata:", error);
+    res.status(500).json({ error: "Kayıt sırasında bir hata oluştu." });
   }
 });
 
@@ -66,7 +70,7 @@ app.post('/login', async (req, res) => {
       { expiresIn: '1h' }
     );
 
-    res.json({ token, user: { email: user.email, name: user.firstName } });
+    res.json({ token, role: user.role, email: user.email, name: user.firstName });
 
   } catch (error) {
     console.error("Giriş başarısız:", error);

@@ -1,6 +1,6 @@
 import './Navbar.css';
 
-const Navbar = ({ setView, token, onLogout, cart }: any) => {
+const Navbar = ({ setView, token, userRole, onLogout, cart }: any) => {
   const itemCount = cart.reduce((total: number, item: any) => total + item.quantity, 0);
 
   return (
@@ -9,8 +9,10 @@ const Navbar = ({ setView, token, onLogout, cart }: any) => {
         <span className="icon">📚</span>
         <span className="text">BookStore</span>
       </div>
+
       <div className="nav-links">
         <button className="nav-btn" onClick={() => setView('catalog')}>Catalog</button>
+        
         <button className="nav-btn cart-link" onClick={() => setView('cart')}>
           Cart {itemCount > 0 && <span className="cart-badge">({itemCount})</span>}
         </button>
@@ -19,6 +21,12 @@ const Navbar = ({ setView, token, onLogout, cart }: any) => {
           <button className="nav-btn" onClick={() => setView('orders')}>My Orders</button>
         )}
         
+        {token && userRole === 'ADMIN' && (
+          <button className="nav-btn admin-nav-link" onClick={() => setView('admin')}>
+            Admin Panel
+          </button>
+        )}
+
         {!token ? (
           <button className="login-btn" onClick={() => setView('login')}>Sign In</button>
         ) : (

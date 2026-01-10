@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { api } from '../../services/api';
 import './LoginPage.css';
 
-const LoginPage = ({ onLoginSuccess }: { onLoginSuccess: (token: string) => void }) => {
+interface LoginPageProps {
+  onLoginSuccess: (data: any) => void;
+}
+
+const LoginPage = ({ onLoginSuccess }: LoginPageProps) => {
   const [isLogin, setIsLogin] = useState(true);
   const [form, setForm] = useState({
     email: '',
@@ -12,26 +16,25 @@ const LoginPage = ({ onLoginSuccess }: { onLoginSuccess: (token: string) => void
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      if (isLogin) {
-        const response = await api.login({ 
-          email: form.email, 
-          password: form.password 
-        });
-        const token = response.data.token;
-        onLoginSuccess(token);
-        alert("Welcome back!");
-      } else {
-        await api.register(form);
-        alert("Account created successfully! Please sign in.");
-        setIsLogin(true); 
-      }
-    } catch (error) {
-      console.error("Auth error:", error);
-      alert(isLogin ? "Login failed. Please check your credentials." : "Registration failed.");
+  e.preventDefault();
+  try {
+    if (isLogin) {
+      const response = await api.login({ 
+        email: form.email, 
+        password: form.password 
+      });
+      onLoginSuccess(response.data);
+      alert("Welcome back!");
+    } else {
+      await api.register(form);
+      alert("Account created successfully! Please sign in.");
+      setIsLogin(true); 
     }
-  };
+  } catch (error) {
+    console.error("Auth error:", error);
+    alert("Auth failed. Check console for details.");
+  }
+};
 
   return (
     <div className="auth-container">
