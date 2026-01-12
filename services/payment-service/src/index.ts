@@ -81,4 +81,11 @@ app.post('/refund', async (req: Request, res: Response) => {
   }
 });
 
+app.get('/transactions', async (req, res) => {
+  const transactions = await prisma.payment.findMany({
+    orderBy: { createdAt: 'desc' }
+  });
+  res.json(transactions);
+});
+
 app.listen(3005, () => console.log("Payment Service running on 3005"));

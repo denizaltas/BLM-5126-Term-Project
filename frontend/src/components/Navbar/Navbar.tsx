@@ -7,7 +7,7 @@ const Navbar = ({ setView, token, userRole, onLogout, cart }: any) => {
     <nav className="main-nav">
       <div className="nav-logo" onClick={() => setView('catalog')}>
         <span className="icon">📚</span>
-        <span className="text">BookStore</span>
+        <span className="text">GoodReads</span>
       </div>
 
       <div className="nav-links">

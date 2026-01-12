@@ -40,9 +40,11 @@ export const api = {
   
     refundOrder: (orderId: number) => 
       axios.patch(`${ORDER_URL}/admin/orders/${orderId}/refund`),
-    
+
   // PAYMENT SERVICE 
   processPayment: (paymentData: { orderId: number; amount: number; cardDetails: any }) => 
     axios.post(`${PAYMENT_URL}/process-payment`, paymentData),
+
+  getTransactions: () => axios.get(`${PAYMENT_URL}/transactions`),
 
 };

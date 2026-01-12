@@ -1,3 +1,4 @@
+/* --- Global Layout --- */
 .admin-container {
   padding: 40px;
   max-width: 1200px;
@@ -38,6 +39,7 @@
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
+/* --- Stats Bar --- */
 .stats-bar {
   display: flex;
   gap: 24px;
@@ -49,7 +51,6 @@
   background: white;
   padding: 24px;
   border-radius: 16px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   border: 1px solid #e2e8f0;
 }
 
@@ -60,17 +61,12 @@
   margin-top: 8px;
 }
 
-.admin-table-container {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e2e8f0;
-  overflow: hidden;
-}
-
+/* --- Global Table Styles --- */
 .admin-table {
   width: 100%;
   border-collapse: collapse;
+  background: white;
+  table-layout: auto;
 }
 
 .admin-table th {
@@ -79,7 +75,6 @@
   text-align: left;
   font-size: 0.85rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
   color: #64748b;
   border-bottom: 1px solid #e2e8f0;
 }
@@ -88,13 +83,36 @@
   padding: 16px;
   border-bottom: 1px solid #f1f5f9;
   font-size: 0.95rem;
+  vertical-align: middle;
 }
 
-.admin-table td:last-child {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
+/* --- AUDIT LOG SPECIFIC (Centering) --- */
+.audit-log-table th:nth-child(3), .audit-log-table td:nth-child(3),
+.audit-log-table th:nth-child(4), .audit-log-table td:nth-child(4),
+.audit-log-table th:nth-child(5), .audit-log-table td:nth-child(5) {
+  text-align: center;
 }
+
+.status-cell-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* --- Buttons & Badges --- */
+.edit-btn, .del-btn, .save-inline-btn, .action-btn, .add-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: 0.2s;
+}
+
+.edit-btn { background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; }
+.del-btn { background: #fff1f2; color: #e11d48; margin-left: 8px; }
+.save-inline-btn, .save-btn, .add-btn { background: #7c3aed; color: white; }
 
 .badge {
   padding: 4px 10px;
@@ -104,8 +122,9 @@
   text-transform: uppercase;
 }
 
-.badge.paid { background: #e6fffa; color: #2c7a7b; }
+.badge.paid, .badge.completed { background: #e6fffa; color: #2c7a7b; }
 .badge.pending { background: #fffaf0; color: #9c4221; }
+.badge.cancelled, .badge.refunded { background: #f1f5f9; color: #475569; }
 
 .low-stock {
   color: #dc2626;
@@ -115,47 +134,7 @@
   border-radius: 4px;
 }
 
-.edit-btn, .del-btn, .save-inline-btn, .action-btn {
-  padding: 6px 14px;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: 0.2s;
-}
-
-.edit-btn {
-  background: #f8fafc;
-  color: #64748b;
-  border: 1px solid #e2e8f0;
-}
-
-.edit-btn:hover { background: #f1f5f9; }
-
-.del-btn {
-  background: #fff1f2;
-  color: #e11d48;
-}
-
-.del-btn:hover { background: #ffe4e6; }
-
-.save-inline-btn, .save-btn {
-  background: #7c3aed;
-  color: white;
-}
-
-.action-btn.refund {
-  background: #f0fff4;
-  color: #2f855a;
-  border: 1px solid #9ae6b4;
-}
-
-.action-btn:hover {
-  filter: brightness(0.95);
-  transform: scale(1.02);
-}
-
+/* --- Modal --- */
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -171,7 +150,6 @@
   padding: 30px;
   border-radius: 20px;
   width: 400px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
 .modal-content input {
@@ -182,26 +160,24 @@
   border-radius: 8px;
 }
 
-.modal-actions {
+.modal-actions { display: flex; gap: 12px; }
+.cancel-modal-btn { flex: 1; background: #f1f5f9; color: #475569; padding: 12px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer;}
+.save-btn { flex: 1; }
+
+/* --- Transaction Details --- */
+.transaction-items-list {
+  margin-top: 10px;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 8px;
+}
+
+.transaction-item-row {
   display: flex;
-  gap: 12px;
-  margin-top: 24px;
+  justify-content: space-between;
+  gap: 15px;
+  font-size: 0.88rem;
 }
 
-.cancel-modal-btn {
-  flex: 1;
-  padding: 12px;
-  border: none;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
-  background: #f1f5f9;
-  color: #475569;
-}
-
-.cancel-modal-btn:hover { background: #e2e8f0; }
-
-.save-btn {
-  flex: 1;
-}
+.item-title { flex: 1; text-align: left; }
+.item-details { color: #94a3b8; font-family: monospace; }
+.trans-id { font-weight: 700; color: #1e293b; margin-bottom: 4px; }

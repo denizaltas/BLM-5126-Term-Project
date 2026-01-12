@@ -14,37 +14,33 @@ const CartView = ({ cart, setCart, token, setView, setCurrentOrderId }: any) => 
   const total = cart.reduce((acc: number, item: any) => acc + item.price * item.quantity, 0);
 
   const handleCheckout = async () => {
-    if (!token) {
-      alert("Please login to checkout");
-      setView('login');
-      return;
-    }
-    
-    try {
-      const orderData = {
-        items: cart.map((item: any) => ({
-          bookIsbn: item.bookIsbn,
-          title: item.title,
-          quantity: item.quantity,
-          price: item.price
-        }))
-      };
+  if (!token) {
+    alert("Please login to checkout");
+    setView('login');
+    return;
+  }
+  
+  try {
+    const orderData = {
+      items: cart.map((item: any) => ({
+        bookIsbn: item.isbn || item.bookIsbn,
+        title: item.title,
+        quantity: item.quantity,
+        price: item.price
+      }))
+    };
 
-      // Order-service ile order oluşturma
-      const res = await api.placeOrder(orderData, token);
-      
-      // response'tan ID çekme
-      const newOrderId = res.data.id;
-      
-      // ID'yi alıp payment-service'e yönlendirme
-      setCurrentOrderId(newOrderId);
-      setView('payment'); // Payment sayfasına geçme
-      
-    } catch (err) {
-      console.error(err);
-      alert("Sipariş oluşturulamadı.");
-    }
-  };
+    const res = await api.placeOrder(orderData, token);
+    const newOrderId = res.data.id;
+    
+    setCurrentOrderId(newOrderId);
+    setView('payment');
+    
+  } catch (err) {
+    console.error("Order Creation Error:", err);
+    alert("Sipariş oluşturulamadı.");
+  }
+};
 
   return (
     <div className="cart-container">
@@ -61,7 +57,8 @@ const CartView = ({ cart, setCart, token, setView, setCurrentOrderId }: any) => 
         <div className="cart-layout">
           <div className="cart-items">
             {cart.map((item: any) => (
-              <div key={item.bookIsbn} className="cart-item-card">
+              // FIXED: item.Isbn to item.isbn
+              <div key={item.isbn} className="cart-item-card">
                 <div className="item-main-content">
                   <div className="item-img-placeholder">
                     <span>Book</span>
@@ -78,7 +75,7 @@ const CartView = ({ cart, setCart, token, setView, setCurrentOrderId }: any) => 
                 <div className="item-actions">
                   <span className="item-subtotal">${(item.price * item.quantity).toFixed(2)}</span>
                   <button 
-                    onClick={() => setCart(cart.filter((i: any) => i.bookIsbn !== item.bookIsbn))} 
+                    onClick={() => setCart(cart.filter((i: any) => i.isbn !== item.isbn))} 
                     className="remove-link"
                   >
                     Remove from cart

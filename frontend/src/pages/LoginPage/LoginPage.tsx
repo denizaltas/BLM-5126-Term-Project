@@ -41,7 +41,7 @@ const LoginPage = ({ onLoginSuccess }: LoginPageProps) => {
       <div className="login-card">
         <h2>{isLogin ? "Welcome Back" : "Create Account"}</h2>
         <p className="subtitle">
-          {isLogin ? "Sign in to your account" : "Join our bookstore community"}
+          {isLogin ? "Sign in to your account" : "Join our GoodReads community"}
         </p>
 
         <form onSubmit={handleSubmit}>
