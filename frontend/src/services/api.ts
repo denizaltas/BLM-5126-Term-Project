@@ -14,6 +14,11 @@ export const api = {
   getProducts: () => axios.get(`${PRODUCT_URL}/products`),
   addBook: (bookData: any) => axios.post(`${PRODUCT_URL}/products`, bookData),
 
+  updateBook: (isbn: string, updateData: { price?: number; stock?: number }) => 
+  axios.patch(`${PRODUCT_URL}/products/${isbn}`, updateData),
+
+  deleteBook: (isbn: string) => axios.delete(`${PRODUCT_URL}/products/${isbn}`),
+
   // ORDER SERVICE
   placeOrder: (orderData: any, token: string) => 
     axios.post(`${ORDER_URL}/orders`, orderData, {
@@ -30,7 +35,14 @@ export const api = {
       headers: { Authorization: `Bearer ${token}` }
     }),
   
+    updateOrderStatus: (orderId: number, status: string) => 
+      axios.patch(`${ORDER_URL}/admin/orders/${orderId}/status`, { status }),
+  
+    refundOrder: (orderId: number) => 
+      axios.patch(`${ORDER_URL}/admin/orders/${orderId}/refund`),
+    
   // PAYMENT SERVICE 
   processPayment: (paymentData: { orderId: number; amount: number; cardDetails: any }) => 
     axios.post(`${PAYMENT_URL}/process-payment`, paymentData),
+
 };

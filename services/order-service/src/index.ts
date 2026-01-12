@@ -74,6 +74,46 @@ app.get('/admin/orders', async (req, res) => {
   }
 });
 
+app.patch('/admin/orders/:id/status', async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  try {
+    const updated = await prisma.order.update({
+      where: { id: Number(id) },
+      data: { status }
+    });
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ error: "Update failed" });
+  }
+});
+
+app.patch('/admin/orders/:id/refund', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const order = await prisma.order.findUnique({ where: { id: Number(id) } });
+
+    if (!order || order.status !== 'PAID') {
+      return res.status(400).json({ error: "Only PAID orders can be refunded" });
+    }
+
+    await axios.post('http://localhost:3005/refund', {
+      orderId: order.id,
+      amount: order.total
+    });
+
+    const updatedOrder = await prisma.order.update({
+      where: { id: Number(id) },
+      data: { status: 'REFUNDED' }
+    });
+
+    res.json(updatedOrder);
+  } catch (error) {
+    res.status(500).json({ error: "Refund failed during cross-service communication" });
+  }
+});
+
 // POST ile order oluşturma
 app.post('/orders', authenticateToken, async (req: any, res: any) => {
   try {

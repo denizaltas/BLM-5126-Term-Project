@@ -13,7 +13,7 @@ model Order {
   userLastName  String
   userEmail String      
   status    String      @default("PENDING") // PENDING, PAID, SHIPPED
-  total     Decimal     // Total cost (e.g., 25.50)
+  total     Decimal     
   createdAt DateTime    @default(now())
   
   items     OrderItem[]

@@ -5,15 +5,15 @@
 }
 
 .book-card {
-  background: var(--white);
+  background: white;
   padding: 1.5rem;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.03);
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   align-items: center;
   text-align: center;
-  min-height: 420px; 
+  position: relative;
 }
 
 .image-square {
@@ -21,11 +21,26 @@
   aspect-ratio: 1/1;
   background: #eee;
   border-radius: 8px;
-  margin-bottom: 1.5rem; 
+  margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #999;
+  position: relative;
+  overflow: hidden;
+}
+
+.sold-out-overlay {
+  position: absolute;
+  background: rgba(220, 38, 38, 0.85);
+  color: white;
+  width: 140%;
+  padding: 8px 0;
+  font-weight: 800;
+  transform: rotate(-15deg);
+  text-align: center;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
 }
 
 .book-info {
@@ -38,8 +53,7 @@
 .book-info h3 {
   font-size: 1.1rem;
   margin: 0 0 8px 0;
-  color: var(--text-dark);
-  min-height: 2.8rem; 
+  min-height: 2.8rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -50,6 +64,22 @@
   font-weight: bold;
   font-size: 1.3rem;
   margin: auto 0 1rem 0;
+}
+
+.cart-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.qty-input {
+  width: 55px;
+  padding: 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  margin-right: 12px;
+  text-align: center;
 }
 
 .add-btn {
@@ -63,25 +93,74 @@
   transition: all 0.2s;
 }
 
-.add-btn:hover {
+.add-btn:hover:not(:disabled) {
   background-color: #1d4ed8;
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
 }
 
-.qty-input {
-  width: 55px;
-  padding: 8px;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  margin-right: 12px;
-  text-align: center;
-  font-weight: 600;
+.add-btn:disabled {
+  background-color: #cbd5e1;
+  cursor: not-allowed;
 }
 
-.cart-controls {
+.low-stock-alert {
+  color: #f97316;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.no-results {
+  text-align: center;
+  padding: 50px;
+  color: #64748b;
+  font-style: italic;
+}
+
+.filter-controls {
   display: flex;
-  justify-content: center;
+  gap: 20px;
   align-items: center;
-  width: 100%;
-  margin-top: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  flex-wrap: wrap;
+}
+
+.search-input {
+  flex: 2;
+  min-width: 250px;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  outline-color: #7c3aed;
+}
+
+.filter-select {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: white;
+}
+
+.price-range {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 150px;
+}
+
+.price-range input {
+  cursor: pointer;
+  accent-color: #7c3aed;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.6; }
+  100% { opacity: 1; }
 }

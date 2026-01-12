@@ -15,3 +15,12 @@ model ValidCard {
   expiry      String
   balance     Float    @default(1000.0)
 }
+
+model Payment {
+  id         Int      @id @default(autoincrement())
+  orderId    Int
+  cardNumber String
+  amount     Decimal
+  status     String   @default("COMPLETED") // COMPLETED, REFUNDED
+  createdAt  DateTime @default(now())
+}

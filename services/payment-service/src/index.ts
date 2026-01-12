@@ -13,7 +13,6 @@ const ORDER_SERVICE_URL = 'http://localhost:3003';
 
 app.post('/process-payment', async (req: Request, res: Response) => {
   const { orderId, amount, cardDetails } = req.body;
-
   const cleanCardNumber = cardDetails.number.replace(/\s/g, '');
 
   try {
@@ -25,21 +24,60 @@ app.post('/process-payment', async (req: Request, res: Response) => {
       return res.status(400).json({ success: false, message: "Kart bilgileri yanlış" });
     }
 
-    if (card.balance < amount) {
+    if (Number(card.balance) < Number(amount)) {
       return res.status(400).json({ success: false, message: "Yetersiz Bakiye" });
     }
 
     await prisma.validCard.update({
       where: { cardNumber: cleanCardNumber }, 
-      data: { balance: card.balance - amount }
+      data: { balance: Number(card.balance) - Number(amount) }
+    });
+
+    await prisma.payment.create({
+        data: {
+            orderId: Number(orderId),
+            cardNumber: cleanCardNumber,
+            amount: Number(amount),
+            status: 'COMPLETED'
+        }
     });
 
     await axios.patch(`${ORDER_SERVICE_URL}/orders/${orderId}/pay`);
-
     res.json({ success: true, message: "Ödeme Başarılı" });
   } catch (error) {
     console.error("Payment Error:", error); 
     res.status(500).json({ success: false, message: "Server hatası" });
+  }
+});
+
+app.post('/refund', async (req: Request, res: Response) => {
+  const { orderId, amount } = req.body;
+
+  try {
+    const payment = await prisma.payment.findFirst({
+      where: { orderId: Number(orderId) }
+    });
+
+    if (!payment) {
+      return res.status(404).json({ error: "Payment record not found" });
+    }
+
+    await prisma.validCard.update({
+      where: { cardNumber: payment.cardNumber },
+      data: {
+        balance: { increment: Number(amount) }
+      }
+    });
+
+    await prisma.payment.update({
+      where: { id: payment.id },
+      data: { status: 'REFUNDED' }
+    });
+
+    res.json({ message: "Refund processed successfully" });
+  } catch (error) {
+    console.error("Refund Error:", error);
+    res.status(500).json({ error: "Failed to process refund in DB" });
   }
 });
 

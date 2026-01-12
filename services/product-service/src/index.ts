@@ -21,7 +21,6 @@ app.get('/products', async (req, res) => {
   res.json(products);
 });
 
-// POST Book
 // Yeni kitap eklemek (yalnızca admin için)
 app.post('/products', async (req: Request, res: Response) => {
   try {
@@ -33,14 +32,42 @@ app.post('/products', async (req: Request, res: Response) => {
         title,
         author,
         genre,
-        price,
-        stock
+        price: parseFloat(price), 
+        stock: parseInt(stock)
       }
     });
     
     res.status(201).json(newBook);
   } catch (error) {
     res.status(500).json({ error: 'Kitap oluşturulamadı!' });
+  }
+});
+
+// Kitap update etmek için
+app.patch('/products/:isbn', async (req: Request, res: Response) => {
+  const { isbn } = req.params;
+  const { price, stock } = req.body;
+  try {
+    const updated = await prisma.book.update({
+      where: { isbn },
+      data: {
+        price: price !== undefined ? parseFloat(price) : undefined,
+        stock: stock !== undefined ? parseInt(stock) : undefined
+      }
+    });
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ error: "Update failed" });
+  }
+});
+
+app.delete('/products/:isbn', async (req, res) => {
+  const { isbn } = req.params;
+  try {
+    await prisma.book.delete({ where: { isbn } });
+    res.json({ message: "Kitap stoktan kaldırıldı" });
+  } catch (error) {
+    res.status(500).json({ error: "Silme işlemi başarısız oldu" });
   }
 });
 
