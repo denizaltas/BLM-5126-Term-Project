@@ -28,7 +28,8 @@ async function startNotificationService() {
       if (msg) {
         try {
           const order = JSON.parse(msg.content.toString());
-          const recipientEmail = order.userEmail || "denizaltas2001@gmail.com";
+          const recipientEmail = order.userEmail;
+          
 
           const rawTotal = order.total;
           const displayTotal = (typeof rawTotal === 'number') 
