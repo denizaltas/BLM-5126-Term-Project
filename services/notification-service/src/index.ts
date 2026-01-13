@@ -18,45 +18,33 @@ async function startNotificationService() {
   try {
     const connection = await amqp.connect(process.env.RABBITMQ_URL || 'amqp://localhost');
     const channel = await connection.createChannel();
-    const queue = 'order_created';
-
-    await channel.assertQueue(queue, { durable: true });
     
-    console.log("Notification Service is RUNNING");
+    const exchange = 'order_exchange';
+    const queue = 'notification_email_queue';
+
+    await channel.assertExchange(exchange, 'fanout', { durable: true });
+    await channel.assertQueue(queue, { durable: true });
+    await channel.bindQueue(queue, exchange, '');
+
+    console.log("Notification Service listening for emails...");
 
     channel.consume(queue, async (msg: ConsumeMessage | null) => {
       if (msg) {
         try {
           const order = JSON.parse(msg.content.toString());
-          const recipientEmail = order.userEmail;
-          
-
-          const rawTotal = order.total;
-          const displayTotal = (typeof rawTotal === 'number') 
-            ? rawTotal.toFixed(2) 
-            : Number(rawTotal || 0).toFixed(2);
-
-          console.log(`Sipariş #${order.id} alındı. Email gönderiliyor...`);
+          const displayTotal = Number(order.total || 0).toFixed(2);
 
           await transporter.sendMail({
             from: '"GoodReads Team" <admin@goodreads.com>',
-            to: recipientEmail,
+            to: order.userEmail,
             subject: `Sipariş Onayı: #${order.id}`,
-            html: `
-              <div style="font-family: sans-serif; padding: 20px;">
-                <h2>Siparişiniz Alındı!</h2>
-                <p>Sipariş No: <b>#${order.id}</b></p>
-                <p>Toplam Tutar: <b>$${displayTotal}</b></p>
-                <p>Teşekkür ederiz!</p>
-              </div>
-            `,
+            html: `<h2>Siparişiniz Alındı!</h2><p>No: #${order.id}</p><p>Toplam: $${displayTotal}</p>`
           });
 
-          console.log(`#${order.id} nolu sipariş için email gönderildi`);
+          console.log(`Email sent for Order #${order.id}`);
           channel.ack(msg); 
-
         } catch (error) {
-          console.error("Notification servis hatası:", error);
+          console.error("Email hatası:", error);
           channel.ack(msg);
         }
       }

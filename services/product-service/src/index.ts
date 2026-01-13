@@ -94,9 +94,15 @@ async function subscribeToOrders() {
   try {
     const connection = await amqp.connect('amqp://guest:guest@localhost:5672');
     const channel = await connection.createChannel();
-    const queue = 'order_created';
+    
+    const exchange = 'order_exchange';
+    const queue = 'product_stock_queue';
 
+    await channel.assertExchange(exchange, 'fanout', { durable: true });
     await channel.assertQueue(queue, { durable: true });
+    await channel.bindQueue(queue, exchange, '');
+
+    console.log("🛠️ Product Service listening for stock updates...");
 
     channel.consume(queue, async (msg) => {
       if (msg !== null) {
@@ -105,22 +111,17 @@ async function subscribeToOrders() {
           const itemsToProcess = payload.items; 
 
           for (const item of itemsToProcess) {
-            console.log(`${item.isbn} nolu ürün için stok azaltılıyor,Adet: ${item.quantity}`);
-            
             await prisma.book.update({
               where: { isbn: item.isbn },
-              data: {
-                stock: {
-                  decrement: item.quantity
-                }
-              }
+              data: { stock: { decrement: item.quantity } }
             });
+            console.log(`Stock reduced: ${item.isbn}, Qty: ${item.quantity}`);
           }
 
-          console.log(`Stok başarıyla güncellendi #${payload.id}`);
+          console.log(`Stock updated for Order #${payload.id}`);
           channel.ack(msg);
         } catch (error) {
-          console.error("Stok miktarı güncellenemedi:", error);
+          console.error("Stok güncelleme hatası:", error);
           channel.ack(msg); 
         }
       }

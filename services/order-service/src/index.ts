@@ -172,10 +172,8 @@ async function publishOrderEvent(order: any) {
   try {
     const connection = await amqp.connect('amqp://guest:guest@localhost:5672');
     const channel = await connection.createChannel();
-    const queue = 'order_created';
-
-    await channel.assertQueue(queue, { durable: true });
-
+    
+    const exchange = 'order_exchange';
     const message = JSON.stringify({
       id: order.id,
       userEmail: order.userEmail,
@@ -187,8 +185,10 @@ async function publishOrderEvent(order: any) {
       }))
     });
 
-    channel.sendToQueue(queue, Buffer.from(message), { persistent: true });
-    console.log("🐇 Event Published to Order Queue:", message);
+    await channel.assertExchange(exchange, 'fanout', { durable: true });
+    channel.publish(exchange, '', Buffer.from(message), { persistent: true });
+    
+    console.log("🐇 Event Published to Queue:", message);
 
     setTimeout(() => { connection.close(); }, 500);
   } catch (error) {
