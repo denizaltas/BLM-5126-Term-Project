@@ -20,6 +20,18 @@ app.post('/process-payment', async (req: Request, res: Response) => {
       where: { cardNumber: cleanCardNumber }
     });
 
+    if (!card) {
+      return res.status(400).json({ success: false, message: "Kart bulunamadı" });
+    }
+
+    if (card.cvv !== cardDetails.cvv) {
+      return res.status(400).json({ success: false, message: "Geçersiz CVV" });
+    }
+
+    if (card.expiry !== cardDetails.expiry) {
+      return res.status(400).json({ success: false, message: "Geçersiz tarih" });
+    }
+
     if (!card || card.cvv !== cardDetails.cvv) {
       return res.status(400).json({ success: false, message: "Kart bilgileri yanlış" });
     }

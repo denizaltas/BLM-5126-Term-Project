@@ -96,15 +96,17 @@ async function subscribeToOrders() {
     const channel = await connection.createChannel();
     const queue = 'order_created';
 
-    await channel.assertQueue(queue, { durable: false });
+    await channel.assertQueue(queue, { durable: true });
 
     channel.consume(queue, async (msg) => {
       if (msg !== null) {
-        const orderItems = JSON.parse(msg.content.toString());
+        try {
+          const payload = JSON.parse(msg.content.toString());
+          const itemsToProcess = payload.items; 
 
-        // Ürünlerin stok miktarını düzenlemek için
-        for (const item of orderItems) {
-          try {
+          for (const item of itemsToProcess) {
+            console.log(`${item.isbn} nolu ürün için stok azaltılıyor,Adet: ${item.quantity}`);
+            
             await prisma.book.update({
               where: { isbn: item.isbn },
               data: {
@@ -113,17 +115,18 @@ async function subscribeToOrders() {
                 }
               }
             });
-            console.log(`Ürünün stok sayısı değiştirildi: ${item.isbn}: -${item.quantity}`);
-          } catch (error) {
-            console.error(`Stok sayısı değiştirilemedi: ${item.isbn}`, error);
           }
-        }
 
-        channel.ack(msg);
+          console.log(`Stok başarıyla güncellendi #${payload.id}`);
+          channel.ack(msg);
+        } catch (error) {
+          console.error("Stok miktarı güncellenemedi:", error);
+          channel.ack(msg); 
+        }
       }
     });
   } catch (error) {
-    console.error("RabbitMQ bağlantısı kurulamadı:", error);
+    console.error("RabbitMQ Bağlantı hatası:", error);
   }
 }
 
