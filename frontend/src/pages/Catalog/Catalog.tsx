@@ -20,7 +20,7 @@ const Catalog = ({ token, addToCart }: CatalogProps) => {
     api.getProducts().then(res => {
       setProducts(res.data);
       setFilteredProducts(res.data);
-    }).catch(err => console.error("Error fetching products:", err));
+    }).catch(err => console.error("Ürünler çekilemedi:", err));
   }, []);
 
   useEffect(() => {

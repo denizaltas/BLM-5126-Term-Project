@@ -57,7 +57,7 @@ app.patch('/products/:isbn', async (req: Request, res: Response) => {
     });
     res.json(updated);
   } catch (error) {
-    res.status(500).json({ error: "Update failed" });
+    res.status(500).json({ error: "Update başarısız oldu" });
   }
 });
 

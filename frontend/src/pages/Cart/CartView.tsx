@@ -15,7 +15,7 @@ const CartView = ({ cart, setCart, token, setView, setCurrentOrderId }: any) => 
 
   const handleCheckout = async () => {
   if (!token) {
-    alert("Please login to checkout");
+    alert("Ödeme sayfasına yönlendirilebilmek için lütfen giriş yapın.");
     setView('login');
     return;
   }
@@ -37,7 +37,7 @@ const CartView = ({ cart, setCart, token, setView, setCurrentOrderId }: any) => 
     setView('payment');
     
   } catch (err) {
-    console.error("Order Creation Error:", err);
+    console.error("Sipariş oluşturma hatası:", err);
     alert("Sipariş oluşturulamadı.");
   }
 };
@@ -57,7 +57,6 @@ const CartView = ({ cart, setCart, token, setView, setCurrentOrderId }: any) => 
         <div className="cart-layout">
           <div className="cart-items">
             {cart.map((item: any) => (
-              // FIXED: item.Isbn to item.isbn
               <div key={item.isbn} className="cart-item-card">
                 <div className="item-main-content">
                   <div className="item-img-placeholder">
@@ -66,7 +65,7 @@ const CartView = ({ cart, setCart, token, setView, setCurrentOrderId }: any) => 
                   <div className="item-details">
                     <h3 className="item-title">{item.title}</h3>
                     <div className="item-meta">
-                      <span className="item-price-unit">${item.price} each</span>
+                      <span className="item-price-unit">${item.price} x</span>
                       <span className="item-qty">Qty: {item.quantity}</span>
                     </div>
                   </div>

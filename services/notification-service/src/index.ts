@@ -22,7 +22,7 @@ async function startNotificationService() {
 
     await channel.assertQueue(queue, { durable: true });
     
-    console.log("🔔 Notification Service is RUNNING");
+    console.log("Notification Service is RUNNING");
 
     channel.consume(queue, async (msg: ConsumeMessage | null) => {
       if (msg) {
@@ -35,7 +35,7 @@ async function startNotificationService() {
             ? rawTotal.toFixed(2) 
             : Number(rawTotal || 0).toFixed(2);
 
-          console.log(`📦 Order #${order.id} received. Sending email...`);
+          console.log(`Sipariş #${order.id} alındı. Email gönderiliyor...`);
 
           await transporter.sendMail({
             from: '"GoodReads Team" <admin@goodreads.com>',
@@ -51,23 +51,23 @@ async function startNotificationService() {
             `,
           });
 
-          console.log(`✅ Email sent for Order #${order.id}`);
+          console.log(`#${order.id} nolu sipariş için email gönderildi`);
           channel.ack(msg); 
 
         } catch (error) {
-          console.error("❌ Notification Processing Error:", error);
+          console.error("Notification servis hatası:", error);
           channel.ack(msg);
         }
       }
     });
   } catch (error) {
-    console.error("❌ RabbitMQ Error:", error);
+    console.error("RabbitMQ Hatası:", error);
   }
 }
 
 transporter.verify((error) => {
-  if (error) console.error("❌ Mailtrap Auth Error. Check .env names!", error);
-  else console.log("🛡️ Mailtrap Ready.");
+  if (error) console.error("Mailtrap Auth Hatası!", error);
+  else console.log("Mailtrap is running...");
 });
 
 startNotificationService();

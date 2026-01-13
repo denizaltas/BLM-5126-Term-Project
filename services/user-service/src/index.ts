@@ -29,7 +29,7 @@ app.post('/register', async (req, res) => {
         password: hashedPassword,
         firstName,
         lastName,
-        role: role || "CUSTOMER" // This will now work if 'generate' was run
+        role: role || "CUSTOMER"
       }
     });
 
@@ -60,7 +60,7 @@ app.post('/login', async (req, res) => {
     // Hangisinin yanlış olduğu önemli değil aynı hatayı döndür
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) {
-       res.status(400).json({ error: "Invalid email or password" });
+       res.status(400).json({ error: "Email veya parola hatalı!" });
        return;
     }
 

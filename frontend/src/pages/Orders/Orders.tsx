@@ -19,7 +19,7 @@ const Orders = ({ token, orders, setOrders, products }: OrdersProps) => {
     if (token) {
       api.getMyOrders(token)
         .then(res => setOrders(res.data))
-        .catch(err => console.error("Failed to fetch orders:", err));
+        .catch(err => console.error("Siparişler çekilemedi:", err));
     }
   }, [token, setOrders]);
 

@@ -27,7 +27,6 @@ function App() {
   const [userRole, setUserRole] = useState<string | null>(localStorage.getItem('role'));
 
   const handleLogin = (data: any) => {
-    console.log("Data received from server:", data);
     setToken(data.token);
     setUserRole(data.role); 
     localStorage.setItem('token', data.token);
@@ -55,7 +54,7 @@ function App() {
       }
       return [...prevCart, { bookIsbn: product.isbn, title: product.title, price: product.price, quantity: qty }];
     });
-    alert(`${product.title} added to cart!`);
+    alert(`${product.title} sepete eklendi!`);
   };
 
   const cartTotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -74,7 +73,7 @@ function App() {
         {view === 'admin' && userRole === 'ADMIN' ? (
           <AdminDashboard token={token!} />
         ) : view === 'admin' ? (
-          <div>Access Denied: You are not an admin.</div>
+          <div>Bu sayfaya erişiminiz bulunmamaktadır.</div>
         ) : null}
 
         {view === 'catalog' && (

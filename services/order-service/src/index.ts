@@ -20,7 +20,7 @@ const authenticateToken = (req: any, res: any, next: any) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
-  if (!token) return res.status(401).json({ error: "Access denied. No token provided." });
+  if (!token) return res.status(401).json({ error: "Token bulunamadı." });
 
   jwt.verify(token, SECRET_KEY, (err: any, user: any) => {
     if (err) return res.status(403).json({ error: "Token geçersiz veya süresi dolmuş!" });
@@ -56,7 +56,7 @@ app.get('/admin/orders', async (req, res) => {
     });
     res.json(allOrders);
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch all orders" });
+    res.status(500).json({ error: "Siparişler yüklenemedi" });
   }
 });
 
@@ -70,7 +70,7 @@ app.patch('/admin/orders/:id/status', async (req, res) => {
     });
     res.json(updated);
   } catch (error) {
-    res.status(500).json({ error: "Update failed" });
+    res.status(500).json({ error: "Update başarısız oldu" });
   }
 });
 
@@ -79,7 +79,7 @@ app.patch('/admin/orders/:id/refund', async (req, res) => {
   try {
     const order = await prisma.order.findUnique({ where: { id: Number(id) } });
     if (!order || order.status !== 'PAID') {
-      return res.status(400).json({ error: "Only PAID orders can be refunded" });
+      return res.status(400).json({ error: "Yalnızca PAID ürünlere ücret iadesi yapılabilir" });
     }
     await axios.post('http://localhost:3005/refund', { orderId: order.id, amount: order.total });
     const updatedOrder = await prisma.order.update({
@@ -88,7 +88,7 @@ app.patch('/admin/orders/:id/refund', async (req, res) => {
     });
     res.json(updatedOrder);
   } catch (error) {
-    res.status(500).json({ error: "Refund failed during cross-service communication" });
+    res.status(500).json({ error: "Ücret iadesi başarısız oldu" });
   }
 });
 
@@ -128,7 +128,7 @@ app.post('/orders', authenticateToken, async (req: any, res: any) => {
           price: realPrice
         });
       } catch (error) {
-        console.error(`Product Service Error for ISBN ${currentIsbn}:`, error);
+        console.error(`Product Service Hatası: ISBN ${currentIsbn}:`, error);
         return res.status(404).json({ error: `Ürün bulunamadı: ${currentIsbn}` });
       }
     }
@@ -149,7 +149,7 @@ app.post('/orders', authenticateToken, async (req: any, res: any) => {
 
     res.status(201).json(newOrder);
   } catch (error) {
-    console.error("Order Creation Logic Error:", error);
+    console.error("Order Oluşturma hatası:", error);
     res.status(500).json({ error: 'Sipariş oluşturulamadı!' });
   }
 });
@@ -163,7 +163,7 @@ app.patch('/orders/:id/pay', async (req, res) => {
     });
     res.json({ success: true, order: updatedOrder });
   } catch (error) {
-    res.status(500).json({ error: "Order not found or update failed" });
+    res.status(500).json({ error: "Sipariş bulunamadı" });
   }
 });
 
@@ -192,7 +192,7 @@ async function publishOrderEvent(order: any) {
 
     setTimeout(() => { connection.close(); }, 500);
   } catch (error) {
-    console.error("RabbitMQ Error:", error);
+    console.error("RabbitMQ Hatası:", error);
   }
 }
 

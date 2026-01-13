@@ -59,7 +59,7 @@ app.post('/refund', async (req: Request, res: Response) => {
     });
 
     if (!payment) {
-      return res.status(404).json({ error: "Payment record not found" });
+      return res.status(404).json({ error: "Payment kaydı bulunamadı" });
     }
 
     await prisma.validCard.update({
@@ -74,10 +74,10 @@ app.post('/refund', async (req: Request, res: Response) => {
       data: { status: 'REFUNDED' }
     });
 
-    res.json({ message: "Refund processed successfully" });
+    res.json({ message: "Ücret iadesi başarıyla tamamlandı" });
   } catch (error) {
-    console.error("Refund Error:", error);
-    res.status(500).json({ error: "Failed to process refund in DB" });
+    console.error("Hata:", error);
+    res.status(500).json({ error: "Ücret iadesi yapılamadı" });
   }
 });
 

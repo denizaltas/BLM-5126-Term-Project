@@ -27,7 +27,7 @@ const AdminDashboard = ({ token }: { token: string }) => {
       setBooks(productRes.data);
       setTransactions(transRes.data);
     } catch (err) {
-      console.error("Fetch error:", err);
+      console.error("Çekilemedi:", err);
     }
   };
 
@@ -41,7 +41,7 @@ const AdminDashboard = ({ token }: { token: string }) => {
         await api.deleteBook(isbn);
         fetchData();
       } catch (err) {
-        alert("Failed to delete book");
+        alert("Kitap silinemedi");
       }
     }
   };
@@ -66,7 +66,7 @@ const AdminDashboard = ({ token }: { token: string }) => {
     try {
       await api.updateOrderStatus(orderId, newStatus);
       fetchData(); 
-    } catch (err) { alert("Status update failed"); }
+    } catch (err) { alert("Durum güncellenemedi"); }
   };
 
   const handleRefund = async (orderId: number) => {
@@ -74,7 +74,7 @@ const AdminDashboard = ({ token }: { token: string }) => {
       try {
         await api.refundOrder(orderId);
         fetchData(); 
-      } catch (err) { alert("Refund failed"); }
+      } catch (err) { alert("Ücret iadesi yapılamadı"); }
     }
   };
 
@@ -83,7 +83,7 @@ const AdminDashboard = ({ token }: { token: string }) => {
       await api.updateBook(isbn, { price: parseFloat(editForm.price), stock: parseInt(editForm.stock) });
       setEditingIsbn(null);
       fetchData();
-    } catch (err) { alert("Update failed"); }
+    } catch (err) { alert("Update başarısız oldu"); }
   };
 
   const stats = {
@@ -109,7 +109,7 @@ const AdminDashboard = ({ token }: { token: string }) => {
 
       {activeTab === 'orders' && (
         <div className="admin-section">
-          <h3>Orders Management</h3>
+          <h3>Orders</h3>
           <table className="admin-table">
             <thead>
               <tr><th>ID</th><th>Customer</th><th>Total</th><th>Status</th><th>Actions</th></tr>
@@ -135,7 +135,7 @@ const AdminDashboard = ({ token }: { token: string }) => {
       {activeTab === 'inventory' && (
         <div className="admin-section">
           <div className="section-header" style={{display: 'flex', justifyContent: 'space-between', marginBottom: '20px'}}>
-            <h3>Inventory Management</h3>
+            <h3>Inventory</h3>
             <button className="add-btn" onClick={() => setIsModalOpen(true)}>+ Add Book</button>
           </div>
           <table className="admin-table">
@@ -185,7 +185,7 @@ const AdminDashboard = ({ token }: { token: string }) => {
 
       {activeTab === 'transactions' && (
         <div className="admin-section">
-          <h3>Financial Audit Log</h3>
+          <h3>Transactions</h3>
           <table className="admin-table audit-log-table">
             <thead>
               <tr>
